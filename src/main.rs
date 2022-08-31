@@ -7,8 +7,6 @@ mod types;
 
 #[tokio::main]
 async fn main() {
-    // let QUERIES: Vec<String> = vec![string("character"), string("anime")];
-
     let args: Vec<String> = env::args().collect();
 
     let mut search_type: &String = &String::from(QUERIES[2]);
