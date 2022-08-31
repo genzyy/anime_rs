@@ -19,10 +19,8 @@ async fn main() {
         let temp = args[2..].join(" ");
         search_query = &temp;
         if search_type == QUERIES[0] {
-            print!("yes");
             helpers::get_quote_from_character(search_type, search_query).await;
         } else if search_type == QUERIES[1] {
-            print!("ye");
             helpers::get_quote_from_title(search_type, search_query).await;
         }
     } else {
