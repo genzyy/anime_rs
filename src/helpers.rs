@@ -4,13 +4,7 @@ use colored::*;
 use reqwest::Client;
 use reqwest::StatusCode;
 use std::io;
-use tui::layout::Alignment;
-use tui::widgets::BorderType;
-use tui::{
-    backend::CrosstermBackend,
-    widgets::{Block, Borders},
-    Terminal,
-};
+use termion;
 
 pub fn format_url(query: &String, parameter: &String) -> String {
     let mut url = String::new();
@@ -22,14 +16,6 @@ pub fn format_url(query: &String, parameter: &String) -> String {
         url = format!("{URL}random")
     }
     return url;
-}
-
-pub fn print_quote(quote: Quote) {
-    println!("{}", quote.anime);
-    println!("{}", quote.character);
-    println!("{}", quote.quote);
-    println!();
-    println!();
 }
 
 pub async fn get_random_quote(search_type: &String, search_query: &String) {
@@ -93,7 +79,7 @@ pub async fn get_quote_from_title(search_type: &String, search_query: &String) {
         StatusCode::OK => match response.json::<Vec<Quote>>().await {
             Ok(parsed) => {
                 for quote in parsed {
-                    print_quote(quote);
+                    pretty_print_quote(quote).ok();
                 }
             }
             Err(_) => {
@@ -110,38 +96,41 @@ pub async fn get_quote_from_title(search_type: &String, search_query: &String) {
 }
 
 pub fn pretty_print_quote(quote: Quote) -> Result<(), io::Error> {
-    let stdio = io::stdout();
-    let backend = CrosstermBackend::new(stdio);
-    let mut terminal = Terminal::new(backend)?;
-
-    terminal.clear()?;
-
-    terminal
-        .draw(|f| {
-            let size = f.size();
-            let block = Block::default()
-                .title("Quote")
-                .borders(Borders::ALL)
-                .border_type(BorderType::Rounded)
-                .title_alignment(Alignment::Center);
-            f.render_widget(block, size);
-        })
-        .ok();
-
-    println!(
-        "{}: {}",
-        "anime".italic().white(),
-        quote.anime.bold().cyan()
-    );
-    println!(
-        "{}: {}",
-        "character".italic().white(),
-        quote.character.italic().green()
-    );
-    println!(
-        "{}: \"{}\"",
-        "quote".italic().white(),
-        quote.quote.bold().white()
-    );
+    let (x, _y) = termion::terminal_size().unwrap();
+    if x >= 90 {
+        println!(
+            "\t{}: {}",
+            "anime".italic().white(),
+            quote.anime.bold().cyan()
+        );
+        println!(
+            "\t{}: {}",
+            "character".italic().white(),
+            quote.character.italic().green()
+        );
+        println!(
+            "\t{}: \"{}\"",
+            "quote".italic().white(),
+            quote.quote.bold().white()
+        );
+    } else {
+        println!(
+            "{}: {}",
+            "anime".italic().white(),
+            quote.anime.bold().cyan()
+        );
+        println!(
+            "{}: {}",
+            "character".italic().white(),
+            quote.character.italic().green()
+        );
+        println!(
+            "{}: \"{}\"",
+            "quote".italic().white(),
+            quote.quote.bold().white()
+        );
+    }
+    println!();
+    println!();
     Ok(())
 }
