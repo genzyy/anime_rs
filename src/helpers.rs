@@ -5,6 +5,7 @@ use reqwest::Client;
 use reqwest::StatusCode;
 use std::io;
 use termion;
+use textwrap;
 
 pub fn format_url(query: &String, parameter: &String) -> String {
     let mut url = String::new();
@@ -97,21 +98,25 @@ pub async fn get_quote_from_title(search_type: &String, search_query: &String) {
 
 pub fn pretty_print_quote(quote: Quote) -> Result<(), io::Error> {
     let (x, _y) = termion::terminal_size().unwrap();
+    // let line_break: &str = "\t";
+    let s = format!("{: ^90}", quote.anime.bold().cyan());
+
     if x >= 90 {
+        println!("{}", s);
         println!(
-            "\t{}: {}",
+            "{}: {}",
             "anime".italic().white(),
             quote.anime.bold().cyan()
         );
         println!(
-            "\t{}: {}",
+            "{}: {}",
             "character".italic().white(),
             quote.character.italic().green()
         );
         println!(
-            "\t{}: \"{}\"",
+            "{}: \"{}\"",
             "quote".italic().white(),
-            quote.quote.bold().white()
+            textwrap::fill(quote.quote.bold().white().as_ref() as &str, 60)
         );
     } else {
         println!(
