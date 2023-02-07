@@ -98,11 +98,11 @@ pub async fn get_quote_from_title(search_type: &String, search_query: &String) {
 
 pub fn pretty_print_quote(quote: Quote) -> Result<(), io::Error> {
     let (x, _y) = termion::terminal_size().unwrap();
-    // let line_break: &str = "\t";
-    let s = format!("{: ^90}", quote.anime.bold().cyan());
+
+    // clear terminal contents and put cursor on top.
+    print!("\x1B[2J\x1B[1;1H");
 
     if x >= 90 {
-        println!("{}", s);
         println!(
             "{}: {}",
             "anime".italic().white(),
