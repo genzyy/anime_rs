@@ -4,7 +4,7 @@ use colored::*;
 use reqwest::Client;
 use reqwest::StatusCode;
 use std::io;
-use termion;
+use termion::{self, clear};
 use textwrap;
 
 pub fn format_url(query: &String, parameter: &String) -> String {
@@ -100,7 +100,7 @@ pub fn pretty_print_quote(quote: Quote) -> Result<(), io::Error> {
     let (x, _y) = termion::terminal_size().unwrap();
 
     // clear terminal contents and put cursor on top.
-    print!("\x1B[2J\x1B[1;1H");
+    clear_terminal_contents(true);
 
     if x >= 90 {
         println!(
@@ -138,4 +138,10 @@ pub fn pretty_print_quote(quote: Quote) -> Result<(), io::Error> {
     println!();
     println!();
     Ok(())
+}
+
+pub fn clear_terminal_contents(is_needed: bool) {
+    if is_needed {
+        print!("\x1B[2J\x1B[1;1H");
+    }
 }
