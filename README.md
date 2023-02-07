@@ -1,5 +1,5 @@
 <div align=center>
-    <h1>quoteRS</h1>
+    <h1>anime_rs</h1>
 </div>
 
 <div align=center>
